@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<title>Portfolio Vikitha</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+}
+
+
+nav {
+    background: #007bff;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+nav ul li {
+    margin-left: 15px;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+
+#home {
+    text-align: center;
+    padding: 30px 20px;
+    background: #e8f2ff;
+}
+#home h1 {
+    margin: 10px 0;
+}
+button {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+button:hover {
+    background: #005fcc;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+.modal-box {
+    background: white;
+    padding: 20px;
+    width: 90%;
+    max-width: 350px;
+    border-radius: 8px;
+}
+
+
+#about {
+    padding: 30px 20px;
+}
+#about .box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+#about img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+
+#projects {
+    padding: 50px 20px;
+    background: #eef3ff;
+}
+.project {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    box-shadow: 0 0 5px #ccc;
+}
+
+
+#contact {
+    padding: 50px 20px;
+}
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.success {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    background: green;
+    color: white;
+    border-radius: 5px;
+}
+
+footer {
+    text-align: center;
+    background: #007bff;
+    color: white;
+    padding: 12px;
+    margin-top: 30px;
+}
+
+.btn {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background: #005fcc;
+}
+
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">MyPortfolio</div>
+    <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+
+<section id="home">
+    <h1>Hi, I'm Matam Vikitha Lakshmi</h1>
+    <p>Software Engineer Intern</p>
+    <button onclick="openModal()">Get Started</button>
+</section>
+
+
+<div class="modal" id="modal">
+    <div class="modal-box">
+        <h3>Welcome!</h3>
+        <p>Thanks for visiting my portfolio.</p>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+
+<section id="about">
+    <h2>About Me</h2>
+    <div class="box">
+        <img src="WhatsApp Image 2025-11-25 at 5.23.25 PM (1).jpeg" alt="Photo">
+        <div>
+        <p>I am a web developer learning modern front-end technologies.</p><br/>
+            <p>I love creating responsive websites.</p>
+            </div>
+    </div>
+</section>
+
+
+<section id="projects">
+    <h2>My Projects</h2>
+
+    <div class="project">
+        <h3>School Progress Website</h3>
+        <a href="index.html" target="_blank" class="btn">View Project</a>
+    </div>
+
+    <div class="project">
+        <h3>Slide Carousel Website</h3>
+        <a href="slide.html" target="_blank" class="btn">View Project</a>
+    </div>
+</section>
+
+
+<section id="contact">
+    <h2>Contact Me</h2>
+
+    <form id="contactForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <textarea id="msg" rows="4" placeholder="Your Message" required></textarea>
+        <button type="submit">Send</button>
+    </form>
+
+    <div class="success" id="successBox">Message Sent Successfully!</div>
+</section>
+
+
+<footer>&copy; 2025 | Designed by Vikitha</footer>
+
+
+<script>
+function openModal() {
+    document.getElementById("modal").style.display = "flex";
+}
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+}
+
+const form = document.getElementById("contactForm");
+const successBox = document.getElementById("successBox");
+
+form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let msg = document.getElementById("msg").value;
+
+    let messages = JSON.parse(localStorage.getItem("messages")) || [];
+    messages.push({ name, email, msg });
+    localStorage.setItem("messages", JSON.stringify(messages));
+
+    successBox.style.display = "block";
+    form.reset();
+});
+</script>
+
+</body>
+</html>
