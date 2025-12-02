@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Grid</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .product-card {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+
+    .product-card img {
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .product-title {
+        font-size: 1.2em;
+        margin: 10px 0;
+    }
+
+    .product-price {
+        font-size: 1.1em;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        pointer-events: none;
+    }
+
+    .modal-overlay.open {
+        display: flex;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 90%;
+        width: 500px;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        transform: scale(0.95);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .modal-overlay.open .modal-content {
+        transform: scale(1);
+    }
+
+    #modal-image {
+        width: 100%;
+        max-height: 350px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    #modal-title {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    #modal-price {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 10px;
+    }
+
+    #modal-description {
+        line-height: 1.6;
+        color: #555;
+    }
+
+    .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        cursor: pointer;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+        color: #333;
+        text-decoration: none;
+    }
+</style>
+</head>
+<body>
+
+<h1>Electronic Gadgets</h1>
+
+<div class="product-grid" id="product-grid"></div>
+
+
+<div id="product-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <img id="modal-image" src="" alt="Product Image">
+        <h2 id="modal-title"></h2>
+        <p id="modal-price"></p>
+        <p id="modal-description"></p>
+    </div>
+</div>
+
+<script>
+const products = [
+    {id:1, title:"Noise Pulse 2 Pro", 
+    image:"1.jpg", 
+    price:"1,449", 
+    description:"Noise Pulse 2 Pro [New Launch] 1.8' Vibrant Display, Bluetooth Calling Smart Watch..."
+    },
+    {id:2,
+         title:"Noise Buds N1",
+        image:"2.jpg", 
+        price:"1,199", 
+        description:"Noise Buds N1 Truly Wireless Earbuds with Chrome Finish, 40H of Playtime..."
+    },
+    {id:3, 
+         title:"Apple iPhone 15", 
+         image:"3.jpg", 
+         price:"52,990", 
+         description:"Apple iPhone 15 (128 GB) - Black"
+    },
+    {id:4, 
+        title:"Apple 2025 MacBook Air", 
+        image:"4.jpg", price:"94,990", 
+        description:"Apple 2025 MacBook Air (13-inch, Apple M4 chip...)"
+    },
+    {id:5, 
+        title:"TOYTONIC Gaming Console", 
+        image:"5.jpg", price:"775", 
+        description:"TOYTONIC Handheld Gaming Console for Kids & Adults..."},
+    {id:6, 
+        title:"Portronics MODESK Stand", 
+        image:"6.jpg", 
+        price:"99", 
+        description:"Portronics MODESK Universal Mobile Holder Stand..."
+    },
+    {id:7, 
+        title:"Bajaj DX-6 Dry Iron", 
+        image:"7.jpg", 
+        price:"539", 
+        description:"Bajaj DX-6 1000 Watts Dry Iron..."
+    },
+    {id:8, 
+        title:"ZEBRONICS THUNDER Bluetooth", 
+        image:"8.jpg", 
+        price:"749", 
+        description:"ZEBRONICS THUNDER Bluetooth 5.3 Wireless Headphones..."
+    },
+    {id:9, 
+        title:"WZATCO Yuva Go Projector", 
+        image:"9.jpg", 
+        price:"5,790", 
+        description:"WZATCO Yuva Go Android 13.0 Smart Projector..."
+    },
+    {id:10, 
+        title:"Prestige IRIS ECO Cooktop", 
+        image:"10.jpg", 
+        price:"1,499", 
+        description:"Prestige IRIS ECO 1200 W Induction Cooktop..."
+    },
+    {id:11, 
+        title:"pTron Fusion Tunes Speaker", 
+        image:"11.jpg", 
+        price:"799", 
+        description:"pTron Newly Launched Fusion Tunes 10W Mini Bluetooth Speaker..."
+    },
+    {id:12, 
+        title:"LIRAMARK Charging Stand", 
+        image:"12.jpg", 
+        price:"199", 
+        description:"LIRAMARK Mobile Phone Charging Stand..."
+    }
+];
+
+
+const grid = document.getElementById('product-grid');
+products.forEach(product => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.setAttribute('data-id', product.id);
+    card.innerHTML = `
+        <img src="${product.image}" alt="${product.title}" >
+        <h2 class="product-title">${product.title}</h2>
+        <p class="product-price">₹${product.price}</p>
+    `;
+    grid.appendChild(card);
+});
+
+
+const modal = document.getElementById('product-modal');
+const closeButton = modal.querySelector('.close-button');
+const modalImage = document.getElementById('modal-image');
+const modalTitle = document.getElementById('modal-title');
+const modalPrice = document.getElementById('modal-price');
+const modalDescription = document.getElementById('modal-description');
+
+
+grid.addEventListener('click', e => {
+    const card = e.target.closest('.product-card');
+    if (!card) return;
+    const productId = card.getAttribute('data-id');
+    const product = products.find(p => p.id == productId);
+    if (!product) return;
+
+    modalImage.src = product.image;
+    modalImage.alt = product.title;
+    modalTitle.textContent = product.title;
+    modalPrice.textContent = `₹${product.price}`;
+    modalDescription.textContent = product.description;
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+});
+
+
+function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = 'auto';
+}
+
+closeButton.addEventListener('click', closeModal);
+modal.addEventListener('click', e => {
+    if (e.target === modal) closeModal();
+});
+
+</script>
+
+</body>
+</html>
