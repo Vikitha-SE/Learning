@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stored User Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            padding: 20px;
+        }
+
+        table {
+            width: 60%;
+            margin: auto;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 0 10px #0003;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back a {
+            color: green;
+            font-size: 18px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Stored User Details</h2>
+
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Password</th>
+    </tr>
+
+    <tr id="dataRow"></tr>
+</table>
+
+<div class="back">
+     <a href="index.html"></a>
+</div>
+
+<script>
+
+    let storedData = JSON.parse(localStorage.getItem("user"));
+
+    if (storedData) {
+        document.getElementById("dataRow").innerHTML = `
+            <td>${storedData.username}</td>
+            <td>${storedData.email}</td>
+            <td>${storedData.password}</td>
+        `;
+    } else {
+        document.getElementById("dataRow").innerHTML = `
+            <td colspan="3" style="color:red;">No data found!</td>
+        `;
+    }
+
+</script>
+
+</body>
+</html>

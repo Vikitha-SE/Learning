@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super Simple To-Do</title>
+</head>
+<body>
+    <h2>To-Do List</h2>
+
+    <input id="taskInput" placeholder="Enter task">
+    <button onclick="addTask()">Add</button>
+
+    <div>
+        <button onclick="setFilter('all')">All</button>
+        <button onclick="setFilter('pending')">Pending</button>
+        <button onclick="setFilter('completed')">Completed</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+let filter = 'all';
+
+function save() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function render() {
+    const list = document.getElementById('taskList');
+    list.innerHTML = '';
+    tasks.filter(t => filter==='all' || (filter==='completed' && t.completed) || (filter==='pending' && !t.completed))
+         .forEach(t => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span style="text-decoration:${t.completed?'line-through':'none'}">${t.text}</span>
+                            <button onclick="toggle(${t.id})">✔</button>
+                            <button onclick="remove(${t.id})">X</button>`;
+            list.appendChild(li);
+         });
+}
+
+function addTask() {
+    const input = document.getElementById('taskInput');
+    if(!input.value.trim()) return;
+    tasks.push({id:Date.now(), text:input.value, completed:false});
+    input.value='';
+    save();
+    render();
+}
+
+function toggle(id) {
+    const t = tasks.find(x=>x.id===id);
+    t.completed = !t.completed;
+    save();
+    render();
+}
+
+function remove(id) {
+    tasks = tasks.filter(x=>x.id!==id);
+    save();
+    render();
+}
+
+function setFilter(f) {
+    filter = f;
+    render();
+}
+
+render();
+</script>
+</body>
+</html>
+

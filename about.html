@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Task List</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            padding-top: 40px;
+        }
+
+        .container {
+            background: white;
+            width: 350px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #ccc;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        #taskInput {
+            width: 70%;
+            padding: 8px;
+        }
+
+        #addBtn {
+            padding: 9px 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        ul {
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            list-style: none;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+            animation: fadeIn 0.3s;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .delete {
+            background: red;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        .filters {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .filters button {
+            margin: 3px;
+            padding: 5px 10px;
+            border: none;
+            background: #ddd;
+            cursor: pointer;
+        }
+
+        .filters .active {
+            background: #007bff;
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(-10px);}
+            to   {opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2> Task List</h2>
+
+    <input type="text" id="taskInput" placeholder="Enter task">
+    <button id="addBtn">Add</button>
+
+    <div class="filters">
+        <button data-filter="all" class="active">All</button>
+        <button data-filter="pending">Pending</button>
+        <button data-filter="completed">Completed</button>
+    </div>
+
+    <ul id="taskList"></ul>
+</div>
+
+
+<script>
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    let filter = "all";
+
+    const list = document.getElementById("taskList");
+    const input = document.getElementById("taskInput");
+
+    function save() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function render() {
+        list.innerHTML = "";
+
+        tasks
+            .filter(t => filter === "all" || 
+                         (filter === "completed" && t.completed) ||
+                         (filter === "pending" && !t.completed))
+            .forEach(task => {
+
+                const li = document.createElement("li");
+
+                li.innerHTML = `
+                    <span class="${task.completed ? "completed" : ""}">${task.text}</span>
+                    <div>
+                        <button onclick="toggle(${task.id})">✔</button>
+                        <button class="delete" onclick="removeTask(${task.id})">X</button>
+                    </div>
+                `;
+
+                list.appendChild(li);
+            });
+    }
+
+    function addTask() {
+        if (input.value.trim() === "") return;
+
+        tasks.push({
+            id: Date.now(),
+            text: input.value,
+            completed: false
+        });
+
+        input.value = "";
+        save();
+        render();
+    }
+
+    function toggle(id) {
+        const task = tasks.find(t => t.id === id);
+        task.completed = !task.completed;
+        save();
+        render();
+    }
+
+    function removeTask(id) {
+        tasks = tasks.filter(t => t.id !== id);
+        save();
+        render();
+    }
+
+    document.getElementById("addBtn").onclick = addTask;
+
+    document.querySelectorAll(".filters button").forEach(btn => {
+        btn.addEventListener("click", () => {
+            filter = btn.dataset.filter;
+
+            document.querySelectorAll(".filters button")
+                .forEach(b => b.classList.remove("active"));
+
+            btn.classList.add("active");
+
+            render();
+        });
+    });
+
+    render();
+</script>
+
+</body>
+</html>
